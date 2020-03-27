@@ -1,4 +1,4 @@
-#import "main.hpp"
+#include "main.hpp"
 
 const char* ssid = SSID;
 const char* password = PSK;
