@@ -25,7 +25,6 @@ void setup(void) {
 	WiFi.begin(ssid, password);
 
 	dht.begin();
-	http.begin(client, OPENWEATHERMAP_API_URL);
 
 	// Wait for connection
 	while (WiFi.status() != WL_CONNECTED) {
@@ -64,12 +63,13 @@ void loop(void) {
 }
 
 float getTargetTemperature() {
+	http.begin(client, OPENWEATHERMAP_API_URL);
 
 	int httpCode = http.GET();
 	if (httpCode > 0) {
 		if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
 			String payload = http.getString();
-			Serial.println(payload);
+//			Serial.println(payload);
 			StaticJsonDocument<500> data;
 			deserializeJson(data, payload);
 			String temp_max_F = data["main"]["temp_max"].as<String>();
