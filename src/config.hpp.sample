@@ -1,0 +1,13 @@
+//
+// Created by Pankaja W on 3/27/2020.
+//
+
+#ifndef _config_H_
+#define _config_H_
+
+#define OPENWEATHERMAP_API_URL ""
+#define SSID ""
+#define PSK  ""
+#define SENSOR_PIN 0
+
+#endif //_config_H_
