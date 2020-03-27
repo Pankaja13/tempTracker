@@ -11,11 +11,9 @@ IPAddress gateway(192, 168, 0, 1);   //IP Address of your WiFi Router (Gateway)
 IPAddress subnet(255, 255, 255, 0);  //Subnet mask
 IPAddress dns(8, 8, 8, 8);  //DNS
 
-HTTPClient http;
 WiFiClient client;
 
 void handleNotFound();
-
 float getTargetTemperature();
 
 void setup(void) {
@@ -63,6 +61,7 @@ void loop(void) {
 }
 
 float getTargetTemperature() {
+	HTTPClient http;
 	http.begin(client, OPENWEATHERMAP_API_URL);
 
 	int httpCode = http.GET();
