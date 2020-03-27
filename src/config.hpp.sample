@@ -5,7 +5,10 @@
 #ifndef _config_H_
 #define _config_H_
 
+// All URLs have to non-SSL
 #define OPENWEATHERMAP_API_URL ""
+#define NOTIFICATION_URL ""
+
 #define SSID ""
 #define PSK  ""
 #define SENSOR_PIN 0

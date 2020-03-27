@@ -15,6 +15,7 @@ WiFiClient client;
 
 void handleNotFound();
 float getTargetTemperature();
+void sendNotification();
 
 void setup(void) {
 	Serial.begin(115200);
@@ -77,6 +78,20 @@ float getTargetTemperature() {
 	}
 	Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
 	return 0.0;
+}
+
+void sendNotification() {
+	HTTPClient http;
+	http.begin(client, NOTIFICATION_URL);
+
+	int httpCode = http.GET();
+	if (httpCode > 0) {
+		if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
+			String payload = http.getString();
+			return;
+		}
+	}
+	Serial.println("Notification request failed");
 }
 
 void handleNotFound() {
