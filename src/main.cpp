@@ -2,11 +2,15 @@
 
 const char* ssid = SSID;
 const char* password = PSK;
+const long samplePeriod = 10000L;
 
 ESP8266WebServer server(80);
 DHT dht(SENSOR_PIN, DHT22);
+SoftwareSerial sensor(CO2_RX, CO2_TX); // RX, TX
 
-IPAddress staticIP(192, 168, 0, 220); //ESP static ip
+long lastSampleTime = 0;
+
+IPAddress staticIP(192, 168, 0, 200); //ESP static ip
 IPAddress gateway(192, 168, 0, 1);   //IP Address of your WiFi Router (Gateway)
 IPAddress subnet(255, 255, 255, 0);  //Subnet mask
 IPAddress dns(8, 8, 8, 8);  //DNS
@@ -16,9 +20,14 @@ WiFiClient client;
 void handleNotFound();
 float getTargetTemperature();
 void sendNotification();
+int readPPMSerial();
+
 
 void setup(void) {
 	Serial.begin(115200);
+
+	sensor.begin(9600);
+
 	WiFi.mode(WIFI_STA);
 	WiFi.config(staticIP, gateway, subnet, dns);
 	WiFi.begin(ssid, password);
@@ -48,6 +57,10 @@ void setup(void) {
 
 	server.on("/humidity", []() {
 		server.send(200, "text/plain", String(dht.readHumidity()));
+	});
+
+	server.on("/co2_ppm", []() {
+		server.send(200, "text/plain", String(readPPMSerial()));
 	});
 
 	server.onNotFound(handleNotFound);
@@ -100,5 +113,26 @@ void handleNotFound() {
 			"Use the following paths: \n"
 			"/tempF \n"
 			"/tempC \n"
-			"/humidity  \n");
+			"/humidity  \n"
+			"/co2_ppm  \n");
+}
+
+int readPPMSerial() {
+	if (millis() < 1000*60*3){ // 3 minute heat-up time
+		return -1;
+	}
+
+	const byte requestReading[] = {0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79};
+	byte result[9];
+
+	for (unsigned char i : requestReading) {
+		sensor.write(i);
+	}
+	while (sensor.available() < 9) {}; // wait for response
+	for (unsigned char & i : result) {
+		i = sensor.read();
+	}
+	int high = result[2];
+	int low = result[3];
+	return high * 256 + low;
 }

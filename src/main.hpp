@@ -12,5 +12,7 @@
 #include <DHT.h>
 #include "config.hpp"
 #include <ArduinoJson.h>
+#include <SoftwareSerial.h>
+
 
 #endif //_main_H_
