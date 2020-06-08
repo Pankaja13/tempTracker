@@ -10,9 +10,9 @@ SoftwareSerial sensor(CO2_RX, CO2_TX); // RX, TX
 
 long lastSampleTime = 0;
 
-IPAddress staticIP(192, 168, 0, 200); //ESP static ip
+IPAddress staticIP(STATIC_IP); //ESP static ip
 IPAddress gateway(192, 168, 0, 1);   //IP Address of your WiFi Router (Gateway)
-IPAddress subnet(255, 255, 255, 0);  //Subnet mask
+IPAddress subnet(255, 255, 0, 0);  //Subnet mask
 IPAddress dns(8, 8, 8, 8);  //DNS
 
 WiFiClient client;
